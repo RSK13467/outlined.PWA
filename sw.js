@@ -1,10 +1,10 @@
 const CACHE_NAME = 'outline-converter-v1';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './site.webmanifest',
-  './assets/'
+  '/outlined.pwa/',
+  '/outlined.pwa/index.html',
+  '/outlined.pwa/manifest.json',
+  '/outlined.pwa/site.webmanifest',
+  '/outlined.pwa/assets/'
 ];
 
 // Install Event
