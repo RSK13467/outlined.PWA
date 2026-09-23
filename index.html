@@ -1,0 +1,203 @@
+<!DOCTYPE html >
+<html lang="en" style="scroll-behavior: smooth;" dir="auto">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="title" content="Outlined | Image Outline Converter B&W · PWA">
+  <meta name="description" content="Image Outline Converter B&W - PWA from Raiyan.">
+  <meta name="keywords" content="outlined, Image Outline Converter, Image Outline Converter B&W - PWA, from Raiyan, IMG convert BW outline">
+  <meta name="author" content="MD. Raiyan Sazid Khan">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Outlined">
+  <meta name="apple-mobile-web-app-description" content="Image Outline Converter B&W · PWA | from Raiyan">
+  <meta name="type" content="PWA">
+  <meta name="url" content="https://rsk13467.github.io/outlined.pwa/">
+  <meta name="site_name" content="Outlined | Image Outline Converter B&W · PWA">
+
+
+  <!-- SEO & Search Console Verification -->
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="PWA">
+  <meta property="og:url" content="https://rsk13467.github.io/outlined.pwa/">
+  <meta property="og:title" content="Outlined | Image Outline Converter B&W · PWA">
+  <meta property="og:description" content="Image Outline Converter B&W - PWA from Raiyan.">
+  <meta property="og:image" content="https://rsk13467.github.io/outlined.pwa/assets/android-chrome-512x512.png">
+  <meta property="og:site_name" content="Outlined | Image Outline Converter B&W · PWA">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://rsk13467.github.io/outlined.pwa/">
+  <meta name="twitter:title" content="Outlined | Image Outline Converter B&W · PWA">
+  <meta name="twitter:description" content="Image Outline Converter B&W · PWA | from Raiyan">
+  <meta name="twitter:image" content="https://rsk13467.github.io/outlined.pwa/assets/android-chrome-512x512.png">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://rsk13467.github.io/outlined.pwa/">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/RSK/favicon.ico">
+  <link rel="shortcut icon" href="RSK/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="16x16" href="/RSK/assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/RSK/assets/favicon-32x32.png">
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/RSK/assets/apple-touch-icon.png">
+  <link rel="android-chrome" type="image/png" sizes="192x192" href="/RSK/assets/android-chrome-192x192.png">
+  <link rel="android-chrome" type="image/png" sizes="512x512" href="/RSK/assets/android-chrome-512x512.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/outlined.pwa/site.webmanifest">
+  <link rel="manifest" href="/outlined.pwa/manifest.json">
+
+  <!-- Stylesheets -->
+
+
+  <title>Outlined | Image Outline Converter B&W · PWA</title>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Outlined | Image Outline Converter B&W · PWA",
+  "url": "https://rsk13467.github.io/outlined.pwa/"
+}
+</script>
+  
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+    body { margin: 0; padding: 20px; background: #f4f4f5; text-align: center; }
+    .card { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .controls { margin: 15px 0; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    canvas { max-width: 100%; height: auto; border: 1px solid #e4e4e7; border-radius: 8px; margin-top: 15px; }
+    input[type="file"] { display: none; }
+    .btn { background: #2563eb; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; }
+    .btn:hover { background: #1d4ed8; }
+  </style>
+</head>
+  
+<body>
+ <header class="header" role="banner">
+  <div class="card">
+    <h1>bw.OUTLINED</h1>
+    <h2>Image to B&W Outline Converter</h2>
+ </header>
+
+<div>
+    <div class="controls">
+      <label class="btn" for="upload">Choose Image</label>
+      <input type="file" id="upload" accept="image/*" />
+      
+      <div>
+        <label for="threshold">Sensitivity (Edge Threshold): </label>
+        <input type="range" id="threshold" min="10" max="150" value="30" />
+      </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    // 1. Register Service Worker for PWA Offline Support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch(err => console.error('SW Registration Failed:', err));
+    }
+
+    // 2. Image Processing & Canvas Manipulation
+    const upload = document.getElementById('upload');
+    const thresholdInput = document.getElementById('threshold');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let loadedImage = null;
+
+    upload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        loadedImage = new Image();
+        loadedImage.onload = () => processImage();
+        loadedImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    thresholdInput.addEventListener('input', () => {
+      if (loadedImage) processImage();
+    });
+
+    function processImage() {
+      const w = loadedImage.width;
+      const h = loadedImage.height;
+      canvas.width = w;
+      canvas.height = h;
+
+      // Draw original image
+      ctx.drawImage(loadedImage, 0, 0, w, h);
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+
+      // Convert to Grayscale Luma Array
+      const gray = new Uint8ClampedArray(w * h);
+      for (let i = 0; i < data.length; i += 4) {
+        // Luminance formula
+        gray[i / 4] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      }
+
+      const threshold = parseInt(thresholdInput.value, 10);
+      const output = ctx.createImageData(w, h);
+      const outData = output.data;
+
+      // Sobel operator / Simple Difference Edge Detection
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const idx = y * w + x;
+          const outIdx = idx * 4;
+
+          // Boundary check
+          if (x === w - 1 || y === h - 1) {
+            outData[outIdx] = 255;
+            outData[outIdx + 1] = 255;
+            outData[outIdx + 2] = 255;
+            outData[outIdx + 3] = 255;
+            continue;
+          }
+
+          // Compare pixel brightness to right and bottom neighbors
+          const current = gray[idx];
+          const right = gray[idx + 1];
+          const bottom = gray[idx + w];
+
+          const diffX = Math.abs(current - right);
+          const diffY = Math.abs(current - bottom);
+          const edge = diffX + diffY;
+
+          // If edge strength exceeds threshold, draw BLACK (outline), else WHITE
+          const val = edge > threshold ? 0 : 255;
+
+          outData[outIdx] = val;     // R
+          outData[outIdx + 1] = val; // G
+          outData[outIdx + 2] = val; // B
+          outData[outIdx + 3] = 255; // Alpha
+        }
+      }
+
+      ctx.putImageData(output, 0, 0);
+    }
+  </script>
+</div>
+  
+  <footer class="footer" role="contentinfo">
+  <div>
+    <p>&copy; 2026 Outlined - From MD. Raiyan Sazid Khan</p>
+    <p>All rights reserved</p>
+    <a href="https://rsk13467.github.io/RSK/">MEe</a>
+  </div>
+  </footer>
+  
+</body>
+</html>
