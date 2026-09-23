@@ -1,0 +1,11 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow sensitive paths
+Disallow: /private/
+Disallow: /.git/
+Disallow: /assets/temp/
+
+# Sitemap
+Sitemap: https://rsk13467.github.io/outlined.pwa/sitemap.xml
