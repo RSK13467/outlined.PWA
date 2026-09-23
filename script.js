@@ -7,6 +7,32 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Theme Toggle Functionality
+const themeToggleBtn = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme) {
+  setTheme(savedTheme);
+} else if (prefersDark) {
+  setTheme('dark');
+} else {
+  setTheme('light');
+}
+
+themeToggleBtn.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
+
 // Inline Web Worker setup for background CPU processing (Sobel Filter)
 const workerCode = `
   self.onmessage = function(e) {
