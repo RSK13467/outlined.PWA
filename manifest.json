@@ -2,7 +2,7 @@
   "name": "Outlined | Image Outline Converter B&W · PWA",
   "short_name": "Outlined PWA",
   "description": "RSK | Portfolio - MD. Raiyan Sazid Khan.",
-  "start_url": "./index.html",
+  "start_url": "/outlined.pwa/",
   "display": "standalone",
   "scope": "/outlined.pwa/",
   "background_color": "#ffffff",
